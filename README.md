@@ -1,6 +1,14 @@
 :wavey:
 # RestoreWhore - a RestoreCord clone
-
+## Copyright has been relinquished, please read the license for information on what you can do.
+## NOTE: Send all copyright notices by *MAIL* in the following format;
+```
+Ron Trimmer
+Copyright Agent
+Nemo Media, LLC
+23 Grandview Dr
+Lake Ozark, MO 65049
+```
 
 ## Unlike RestoreCord, we won't completely mask how this works, so here's a small tutorial :)
 > [!WARNING]
