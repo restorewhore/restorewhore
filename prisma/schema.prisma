@@ -1,0 +1,422 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider     = "mysql"
+    url          = env("DATABASE_URL")
+    relationMode = "prisma"
+}
+
+model accounts {
+    id             Int          @id @default(autoincrement())
+    username       String       @unique @db.VarChar(255)
+    email          String       @db.LongText()
+    password       String       @db.LongText()
+    role           String?      @default("enterprise")
+    pfp            String       @default("https://restorewhore.com/logo512.png")
+    banned         Int          @default(0)
+    twoFactor      Int          @default(0)
+    googleAuthCode String?
+    darkmode       Boolean      @default(true)
+    expiry         DateTime?     @default("9999-09-09T09:09:09Z")
+    admin          Boolean      @default(false)
+    lastIp         String?
+    createdAt      DateTime     @default(now())
+    userId         BigInt?      @db.UnsignedBigInt
+    referrer       Int?
+    referralCode   String?      @unique
+    servers        servers[]
+    customBots     customBots[]
+    sessions       sessions[]
+    emails         emails[]
+    payments       payments[]
+    logs           logs[]
+    giftCodes      giftCodes[]
+
+    @@index([username])
+    @@index([lastIp])
+    @@index([userId])
+    @@index([createdAt])
+}
+
+model servers {
+    id            Int            @id @default(autoincrement())
+    name          String         @unique
+    ownerId       Int
+    guildId       BigInt         @unique @db.UnsignedBigInt
+    roleId        BigInt         @unique @db.UnsignedBigInt
+    redirectUrl   String?
+    picture       String?        @default("https://restorewhore.com/logo512.png")
+    vpncheck      Boolean        @default(false)
+    blockAlts     Boolean        @default(false)
+    blockWireless Boolean        @default(false)
+    webhook       String?
+    bgImage       String?
+    description   String?
+    tags          String?
+    themeColor    String         @default("4f46e5")
+    customBotId   Int
+    pulling       Boolean        @default(false)
+    pullTimeout   DateTime?      @default(now())
+    importing     Boolean        @default(false)
+    ipLogging     Boolean        @default(true)
+    captcha       Boolean        @default(false)
+    locked        Boolean        @default(false)
+    feedbackPage  Boolean        @default(false)
+    verified      Boolean        @default(false)
+    nsfw          Boolean        @default(false)
+    minAccountAge Int            @default(0)
+    unlisted      Boolean        @default(false)
+    private       Boolean        @default(false)
+    inviteOnly    Boolean        @default(false)
+    authorizeOnly Boolean        @default(false)
+    discoverable  Int            @default(0)
+    theme         Theme          @default(DEFAULT)
+    createdAt     DateTime       @default(now())
+    customBot     customBots     @relation(fields: [customBotId], references: [id])
+    owner         accounts       @relation(fields: [ownerId], references: [id])
+    members       members[]
+    blacklist     blacklist[]
+    backups       backups[]
+    guildMembers  guildMembers[]
+    migrations    migrations[]
+    invites       invites[]
+    feedback      feedback[]
+
+    @@index([name])
+    @@index([ownerId])
+    @@index([guildId])
+    @@index([roleId])
+    @@index([description])
+    @@index([tags])
+    @@index([customBotId])
+    @@index([createdAt])
+}
+
+model invites {
+    id        Int      @id @default(autoincrement())
+    code      String   @unique @db.VarChar(500)
+    uses      Int      @default(0)
+    maxUses   Int      @default(-1)
+    guildId   BigInt   @db.UnsignedBigInt
+    guild     servers  @relation(fields: [guildId], references: [guildId])
+    createdAt DateTime @default(now())
+
+    @@index([code])
+    @@index([guildId])
+}
+
+model feedback {
+    id        Int      @id @default(autoincrement())
+    stars     Int      @default(5)
+    message   String   @db.LongText()
+    guildId   BigInt   @db.UnsignedBigInt
+    guild     servers  @relation(fields: [guildId], references: [guildId])
+    createdAt DateTime @default(now())
+
+    @@index([guildId])
+}
+
+model migrations {
+    id               Int      @id @default(autoincrement())
+    guildId          BigInt   @db.UnsignedBigInt
+    migrationGuildId BigInt   @default(0) @db.UnsignedBigInt
+    status           Status   @default(PENDING)
+    totalCount       Int      @default(0)
+    successCount     Int      @default(0)
+    bannedCount      Int      @default(0)
+    maxGuildsCount   Int      @default(0)
+    invalidCount     Int      @default(0)
+    failedCount      Int      @default(0)
+    blacklistedCount Int      @default(0)
+    startedAt        DateTime @default(now())
+    updatedAt        DateTime @default(now())
+    createdAt        DateTime @default(now())
+    server           servers  @relation(fields: [guildId], references: [guildId])
+
+    @@index([guildId])
+}
+
+model backups {
+    id          Int            @id @default(autoincrement())
+    serverName  String
+    guildId     BigInt         @unique @db.UnsignedBigInt
+    iconURL     String
+    backupId    String         @unique @default(uuid())
+    createdAt   DateTime       @default(now())
+    server      servers        @relation(fields: [guildId], references: [guildId])
+    channels    channels[]
+    roles       roles[]
+    guildMembes guildMembers[]
+    messages    messages[]
+
+    @@index([backupId])
+    @@index([guildId])
+}
+
+model messages {
+    id          Int      @id @default(autoincrement())
+    channelId   BigInt   @db.UnsignedBigInt
+    backupId    String
+    username    String   @db.LongText()
+    avatar      String   @db.LongText()
+    content     String?  @db.LongText()
+    embeds      String?  @db.LongText()
+    files       String?  @db.LongText()
+    messageDate DateTime @default(now())
+    createdAt   DateTime @default(now())
+    backup      backups  @relation(fields: [backupId], references: [backupId])
+    channel     channels @relation(fields: [channelId], references: [channelId])
+
+    @@index([channelId])
+    @@index([backupId])
+}
+
+model channels {
+    id               Int                  @id @default(autoincrement())
+    channelId        BigInt               @unique @db.UnsignedBigInt
+    backupId         String
+    type             Int
+    name             String
+    position         Int
+    bitrate          Int?
+    userLimit        Int?
+    parentId         BigInt?              @db.UnsignedBigInt
+    topic            String?              @db.LongText()
+    rateLimitPerUser Int?
+    nsfw             Boolean
+    createdAt        DateTime             @default(now())
+    permissions      channelPermissions[] @relation("channel_permissions")
+    backup           backups              @relation(fields: [backupId], references: [backupId])
+    messages         messages[]
+
+    @@index([channelId])
+    @@index([backupId])
+}
+
+model channelPermissions {
+    id        Int      @id @default(autoincrement())
+    channelId BigInt   @db.UnsignedBigInt
+    roleId    BigInt   @db.UnsignedBigInt
+    type      String
+    allow     BigInt
+    deny      BigInt
+    createdAt DateTime @default(now())
+    channel   channels @relation("channel_permissions", fields: [channelId], references: [channelId])
+
+    @@index([channelId])
+}
+
+model roles {
+    id          Int      @id @default(autoincrement())
+    backupId    String
+    name        String
+    roleId      BigInt   @unique @db.UnsignedBigInt
+    botId       BigInt?
+    color       String
+    hoist       Boolean
+    permissions BigInt
+    mentionable Boolean
+    position    Int
+    isEveryone  Boolean
+    createdAt   DateTime @default(now())
+    backup      backups  @relation(fields: [backupId], references: [backupId])
+
+    @@index([roleId])
+    @@index([backupId])
+}
+
+model guildMembers {
+    id        Int      @id @default(autoincrement())
+    backupId  String
+    userId    BigInt   @db.UnsignedBigInt
+    guildId   BigInt   @db.UnsignedBigInt
+    nickname  String?
+    roles     String   @db.LongText()
+    createdAt DateTime @default(now())
+    backup    backups  @relation(fields: [backupId], references: [backupId])
+    server    servers  @relation(fields: [guildId], references: [guildId])
+    // @@index([userId, guildId])
+
+    @@unique([userId, guildId])
+    @@index([backupId])
+    @@index([guildId])
+}
+
+model logs {
+    id        Int      @id @default(autoincrement())
+    type      Int
+    username  String
+    accountId Int      @default(0)
+    ipAddr    String
+    device    String   @db.LongText()
+    createdAt DateTime @default(now())
+    account   accounts @relation(fields: [accountId], references: [id])
+
+    @@index([accountId])
+    @@index([ipAddr])
+}
+
+model errors {
+    id        Int      @id @default(autoincrement())
+    code      String   @unique
+    message   String   @db.LongText()
+    createdAt DateTime @default(now())
+}
+
+model sessions {
+    id        Int      @id @default(autoincrement())
+    name      String   @default("Unknown")
+    token     String   @unique @db.VarChar(500)
+    api       Boolean  @default(false)
+    device    String   @default("Unknown") @db.VarChar(500)
+    expiry    DateTime @default(now())
+    account   accounts @relation(fields: [accountId], references: [id])
+    accountId Int
+    createdAt DateTime @default(now())
+
+    @@index([token])
+    @@index([accountId])
+}
+
+model members {
+    id           Int      @id @default(autoincrement())
+    userId       BigInt   @db.UnsignedBigInt
+    guildId      BigInt   @db.UnsignedBigInt
+    accessToken  String
+    refreshToken String
+    ip           String?
+    username     String
+    avatar       String
+    email        String?  @db.VarChar(255)
+    isp          String?
+    state        String?
+    city         String?
+    country      String?
+    country_code String?
+    vpn          Boolean  @default(false)
+    referrer     String?
+    device       String?
+    unauthorized Boolean  @default(false)
+    createdAt    DateTime @default(now())
+    guild        servers  @relation(fields: [guildId], references: [guildId])
+    // @@index([userId, guildId])
+
+    @@unique([userId, guildId])
+    @@index([userId])
+    @@index([guildId])
+    @@index([accessToken])
+    @@index([refreshToken])
+    @@index([ip])
+    @@index([username])
+    @@index([email])
+    @@index([isp])
+    @@index([state])
+    @@index([city])
+    @@index([country])
+    @@index([country_code])
+    @@index([vpn])
+    @@index([referrer])
+    @@index([device])
+    @@index([unauthorized])
+    @@index([createdAt])
+}
+
+model blacklist {
+    id        Int      @id @default(autoincrement())
+    type      Int
+    value     String
+    reason    String?  @db.VarChar(999)
+    guildId   BigInt   @db.UnsignedBigInt
+    guild     servers  @relation(fields: [guildId], references: [guildId])
+    createdAt DateTime @default(now())
+
+    @@index([value])
+    @@index([guildId])
+}
+
+model customBots {
+    id           Int       @id @default(autoincrement())
+    name         String
+    clientId     BigInt    @unique @db.UnsignedBigInt
+    botToken     String
+    botSecret    String
+    publicKey    String?
+    customDomain String?
+    ownerId      Int
+    owner        accounts  @relation(fields: [ownerId], references: [id])
+    servers      servers[]
+
+    @@index([ownerId])
+    @@index([clientId])
+}
+
+model news {
+    id        Int      @id @default(autoincrement())
+    title     String   @db.LongText
+    content   String   @db.LongText
+    author    String
+    severity  Int
+    createdAt DateTime @default(now())
+}
+
+model emails {
+    id        Int      @id @default(autoincrement())
+    accountId Int
+    title     String   @db.LongText
+    code      String   @db.VarChar(999)
+    expires   DateTime
+    used      Boolean  @default(false)
+    createdAt DateTime @default(now())
+    account   accounts @relation(fields: [accountId], references: [id])
+
+    @@index([accountId])
+}
+
+model payments {
+    id             Int         @id @default(autoincrement())
+    accountId      Int
+    amount         Int
+    type           String
+    subscriptionId String      @unique @db.VarChar(500)
+    payment_status String
+    gift           Boolean     @default(false)
+    createdAt      DateTime    @default(now())
+    account        accounts    @relation(fields: [accountId], references: [id])
+    giftCodes      giftCodes[]
+
+    @@index([accountId])
+    @@index([subscriptionId])
+}
+
+model giftCodes {
+    id        Int       @id @default(autoincrement())
+    code      String    @unique @db.VarChar(500)
+    amount    Int
+    paymentId Int
+    used      Boolean   @default(false)
+    usedBy    Int
+    usedAt    DateTime?
+    createdAt DateTime  @default(now())
+    account   accounts  @relation(fields: [usedBy], references: [id])
+    payment   payments  @relation(fields: [paymentId], references: [id])
+
+    @@index([code])
+    @@index([paymentId])
+    @@index([usedBy])
+}
+
+enum Theme {
+    DEFAULT
+    DISCORD
+    TERMINAL
+}
+
+enum Status {
+    PENDING
+    PULLING
+    SUCCESS
+    FAILED
+    STOPPED
+}
