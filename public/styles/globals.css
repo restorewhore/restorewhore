@@ -1,0 +1,51 @@
+html {
+	background-color: #0a0a0a !important;
+	height: 100% !important;
+}
+
+body {
+	scrollbar-color: hsla(0, 0%, 100%, 0.25) transparent;
+	background-color: transparent !important;
+}
+
+:root {
+	color-scheme: dark;
+}
+
+:target {
+	scroll-margin-top: 0;
+}
+
+.loading-bar {
+	z-index: 9999;
+}
+
+#nprogress {
+	border-top-color: #4f46e5;
+	border-left-color: #4f46e5;
+	z-index: 99999;
+}
+
+#nprogress .peg {
+	box-shadow: 0 0 10px #4f46e5, 0 0 5px #4f46e5;
+	z-index: 99999;
+}
+
+#nprogress .bar {
+	background: #4f46e5;
+	z-index: 99999;
+}
+
+.apexcharts-tooltip.apexcharts-theme-dark {
+	background: #121212 !important;
+	border: 1px solid #1a1a1a !important;
+}
+
+.apexcharts-tooltip {
+	box-shadow: unset !important;
+}
+
+.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-title {
+	background: rgb(5 5 5 / 25%) !important;
+	border-bottom: unset !important;
+}
