@@ -1,9 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../../../src/db";
-import { createRedisInstance } from "../../../src/Redis";
 import { Prisma } from "@prisma/client";
-
-const redis = createRedisInstance();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== "GET") return res.status(405).json({ success: false, message: "Method not allowed" });
@@ -66,8 +63,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 customDomain: server.customBot.customDomain
             },
         })) as any;
-
-        search ? null : await redis.set("discovery", JSON.stringify(servers), "EX", 1800);
 
         const serverCount = await prisma.servers.count({
             where: {
