@@ -1,20 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../../../src/db";
 import { accounts } from "@prisma/client";
-import { createRedisInstance } from "../../../src/Redis";
 import withAuthentication from "../../../src/withAuthentication";
 
-const redis = createRedisInstance();
 
 async function handler(req: NextApiRequest, res: NextApiResponse, user: accounts) {
     if (!user.admin) return res.status(400).json({ success: false, message: "Account is not an admin." });
 
     try {
-        const cached = await redis.get("adminStats");
-        if (cached) {
-            return res.status(200).json(JSON.parse(cached));
-        }
-
         const [accountsCount, accountsBusinessCount, accountsPremiumCount, serversCount, serversPullingCount, membersCount, customBotsCount, migrations, activeMigrations, payments] = await Promise.all([
             prisma.accounts.count(),
             prisma.accounts.count({ where: { role: "business" } }),
@@ -68,7 +61,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse, user: accounts
             lastPurchases: formattedLastPurchases,
         };
 
-        await redis.set("adminStats", JSON.stringify(response), "EX", 300);
         return res.status(200).json(response);
     }
     catch (e: any) { console.error(e); return res.status(400).send("400 Bad Request"); }
