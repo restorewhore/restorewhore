@@ -2,11 +2,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { accounts } from "@prisma/client";
 import { prisma } from "../../../../../../src/db";
 import withAuthentication from "../../../../../../src/withAuthentication";
-import { createRedisInstance } from "../../../../../../src/Redis";
 import axios from "axios";
 import { HttpsProxyAgent } from "https-proxy-agent";
-
-const redis = createRedisInstance();
 
 
 async function handler(req: NextApiRequest, res: NextApiResponse, user: accounts) {
@@ -194,8 +191,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse, user: accounts
                 themeColor: data.themeColor ? ((user.role === "business" || user.role === "enterprise") ? data.themeColor.replace("#", "") : "4e46ef") : "4e46ef",
             }
         });
-
-        await redis.del(`server:${server.guildId}`);
 
         return res.status(200).json({ success: true, message: "Successfully Updated your server!", server: {
             id: newServer.id,

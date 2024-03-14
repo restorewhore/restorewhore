@@ -1,7 +1,7 @@
-:wavey:
+👋
 # RestoreWhore - a RestoreCord clone
-## Copyright has been relinquished, please read the license for information on what you can do.
-## NOTE: Send all copyright notices by *MAIL* in the following format;
+#### Copyright has been relinquished, please read the license for information on what you can do.
+#### NOTE: Send all copyright notices by *MAIL* in the following format;
 ```
 Ron Trimmer
 Copyright Agent
@@ -15,22 +15,36 @@ Lake Ozark, MO 65049
 > [VaultCord](https://vaultcord.com) is still a way better solution than this, this is really meant for tinkerers like us. And of course, many thanks to mak for helping out :) Make sure to check out VaultCord, it's miles better than this heap of trash
 > As this is a direct clone of RestoreCord (but with fixes to make it operational), there are inherit vulnerabilities within the software. Blame xenos.
 > Therefore, you shouldn't use this in a production env. Just use VaultCord. Again, it's way better and more secure (like seriously, why is not hashing IPs industry standard! VaultCord hashes their IPs, so good luck ever breaking it)
- - First, create a .env file with these values: 
-```
-DATABASE_URL = ""
-BUILD_DIR = "dist"
-JWT_SECRET = ""
-HCAPTCHA_SECRET = ""
-COINBASE_API_KEY = ""
-STRIPE_SECRET_KEY = ""
-IPINFO_TOKEN = ""
-NODE_ENV = "production"
-SENDGRID_API_KEY = ""
-PROXYCHECK = ""
-PLATFORM = "PRODUCTION"
-CF_API_TOKEN = ""
-CLOUDFLARE_ZONE_ID = ""
-```
+
+## Instructions
+
+Rent a cheap server from https://ovhcloud.com or https://pfcloud.io/ Ubuntu is a good operating service because you can find many resources using Ubuntu online
+<br>
+Install Nodejs on your server https://nodejs.org/en/download/package-manager
+<br>
+Install MySQL on server https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04
+<br><br>
+Connect to MySQL `mysql -u root` and create the database `CREATE DATABASE restore;` then `quit` command.
+<br>
+Now download source code `git clone https://github.com/rc-mill/restorewhore.git`
+<br>
+Navigate to source folder `cd restorewhore`
+<br><br>
+Install libraries `npm install`
+<br>
+Initialize the database tables `npx prisma migrate dev --name init`
+<br>
+Build the source code `npm run build` (you must do this EVERY time you change code)
+<br>
+Turn the site online `npm install -g pm2` and then `pm2 start npm --name "restorewhore" -- start` and `pm2 save`
+<br><br>
+*Note: If pm2 doesn't work for you, you can use `npm start` instead. BUT this will only work while terminal is open, so you need something like PM2 for live production sites.*
+<br><br>
+Profit!
+
+## Extra notes
+
+.env file explained:
 
 `DATABASE_URL` is any "mysql://" connection string. You can create a self-hosted database, or use something like [DigitalOcean](https://digitalocean.com).
 
@@ -58,9 +72,7 @@ CLOUDFLARE_ZONE_ID = ""
 
 `CLOUDFLARE_ZONE_ID` is the zone your domain is in. You can get it by going to the [Cloudflare dashboard](https://dash.cloudflare.com), going to your domain, and scrolling down. You should see "Zone ID" and a bunch of random letters/numbers below it. That is your Zone ID.
 
-
-
-## Now that you have the configuration mostly setup,
+#### Now that you have the configuration mostly setup,
 You should change the Sitekey (use Findall and search for "sitekey"), and use the SiteKey (**NOT THE SITEKEY SECRET**) that you got from [HCaptcha](https://hcaptcha.com).
 
 You can use Findall to replace any mentions of "RestoreWhore" with your own name (but first, you should replace "restorewhore.com" with the domain you're going to be using).
