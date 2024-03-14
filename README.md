@@ -37,6 +37,8 @@ Initialize the database tables `npx prisma migrate dev --name init`
 Build the source code `npm run build` (you must do this EVERY time you change code)
 <br>
 Turn the site online `npm install -g pm2` and then `pm2 start npm --name "restorewhore" -- start` and `pm2 save`
+<br>
+*Note: If pm2 doesn't work for you, you can use `npm start` instead. BUT this will only work while terminal is open, so you need something like PM2 for live production sites.*
 <br><br>
 Profit!
 
