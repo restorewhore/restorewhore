@@ -4,11 +4,8 @@ import { prisma } from "../../../../src/db";
 import { ProxyCheck } from "../../../../src/proxycheck";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import { accounts } from "@prisma/client";
-import { createRedisInstance } from "../../../../src/Redis";
 import withAuthentication from "../../../../src/withAuthentication";
 import axios from "axios";
-
-const redis = createRedisInstance();
 
 async function handler(req: NextApiRequest, res: NextApiResponse, user: accounts) {
     switch (req.method) {
@@ -19,9 +16,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse, user: accounts
 
             const servers = await prisma.servers.findMany({ where: { ownerId: user.id } });
             if (!servers) return res.status(400).json({ success: false, message: "Server not found." });
-
-            const cached = await redis.get(`member:${user.id}:${userId}`);
-            if (cached) return res.status(200).json(JSON.parse(cached));
 
             let guildIds: any = [];
             guildIds = servers.map((server: any) => server.guildId);
@@ -76,7 +70,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse, user: accounts
                 };
 
                 if (resp.status !== 200) {
-                    await redis.set(`member:${user.id}:${userId}`, JSON.stringify(response), "EX", 3600);
                     return res.status(200).json(response);
                 }
                 else if (resp.status === 200) {
@@ -119,7 +112,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse, user: accounts
                         }
                     };
 
-                    await redis.set(`member:${user.id}:${userId}`, JSON.stringify(response), "EX", 3600);
                     return res.status(200).json(response);
                 }
 
