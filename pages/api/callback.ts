@@ -3,10 +3,7 @@ import { prisma } from "../../src/db";
 import { getIPAddress } from "../../src/getIPAddress";
 import { User, addMember, addRole, exchange, resolveUser, sendWebhookMessage, sleep, snowflakeToDate } from "../../src/Migrate";
 import { ProxyCheck } from "../../src/proxycheck";
-import { createRedisInstance } from "../../src/Redis";
 import { IntlRelativeTime } from "../../src/functions";
-
-const redis = createRedisInstance();
 
 function isSnowflake(value: string): boolean {
     return /^\d{16,19}$/.test(value);
@@ -34,9 +31,7 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
         const IPAddr: any = getIPAddress(req);
         const guildId: any = BigInt(req.query.state as any);
 
-        serverInfo = await redis.get(`server:${guildId}`);
-        if (serverInfo) { serverInfo = JSON.parse(serverInfo); }
-        else { 
+
             serverInfo = await prisma.servers.findUnique({
                 select: {
                     name: true,
@@ -61,14 +56,8 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
             serverInfo.guildId = serverInfo.guildId.toString();
             serverInfo.roleId = serverInfo.roleId.toString();
 
-            await redis.set(`server:${guildId}`, JSON.stringify(serverInfo), "EX", 60 * 30);
-        }
         if (!serverInfo) return reject(10004 as any);
 
-
-        customBotInfo = await redis.get(`customBot:${serverInfo.customBotId}`);
-        if (customBotInfo) { customBotInfo = JSON.parse(customBotInfo); }
-        else {
             customBotInfo = await prisma.customBots.findUnique({
                 select: {
                     clientId: true,
@@ -81,9 +70,7 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
             if (!customBotInfo) return reject(10002 as any);
             
             customBotInfo.clientId = customBotInfo.clientId.toString();
-
-            await redis.set(`customBot:${serverInfo.customBotId}`, JSON.stringify(customBotInfo), "EX", 60 * 60);
-        }
+        
         if (!customBotInfo) return reject(10002 as any);
 
         domain = customBotInfo.customDomain ? customBotInfo.customDomain : req.headers.host;
@@ -97,9 +84,6 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
             if (respon.status !== 200) return res.status(400).json({ code: "10001", message: "Unknown user", help: `please contact server owner: https://docs.restorecord.com/troubleshooting/invalid-bot-secret` });
             if (!respon.data.access_token) return reject(990001 as any);
 
-            serverOwner = await redis.get(`serverOwner:${serverInfo.ownerId}`);
-            if (serverOwner) { serverOwner = JSON.parse(serverOwner); }
-            else {
                 serverOwner = await prisma.accounts.findUnique({
                     select: {
                         userId: true,
@@ -109,8 +93,6 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
                 });
                 serverOwner.userId = serverOwner.userId ? serverOwner.userId.toString() : "0";
                 
-                await redis.set(`serverOwner:${serverInfo.ownerId}`, JSON.stringify(serverOwner), "EX", 60 * 60);
-            }
             if (!serverOwner) return res.status(400).json({ success: false, message: "No server owner found" });
 
             const account: User = await resolveUser(respon.data.access_token);
@@ -151,9 +133,8 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
                 }
 
                 if (serverInfo.captcha) {
-                    const captcha = await redis.get(`captcha:${userId}`);
                     const alreadyVerified = await prisma.members.findUnique({ select: { id: true }, where: { userId_guildId: { userId: userId, guildId: guildId } } });
-                    if (!captcha && !alreadyVerified) {
+                    if (!alreadyVerified) {
                         res.setHeader("Set-Cookie", `RC_err=777 RC_errStack=${userId}; Path=/; Max-Age=120;`);
                         return res.redirect(`https://${domain}/verify/${state}`);
                     }
