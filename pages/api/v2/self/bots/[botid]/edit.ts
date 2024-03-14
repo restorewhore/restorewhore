@@ -8,9 +8,6 @@ dotenv.config({ path: "../../" });
 
 import { prisma } from "../../../../../../src/db";
 import withAuthentication from "../../../../../../src/withAuthentication";
-import { createRedisInstance } from "../../../../../../src/Redis";
-
-const redis = createRedisInstance();
 
 async function handler(req: NextApiRequest, res: NextApiResponse, user: accounts) { 
     return new Promise(async resolve => {
@@ -101,8 +98,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse, user: accounts
                     where: { customBotId: bot.id, },
                     data: { customBotId: newBot.id, }
                 });
-
-                await redis.del(`customBot:${newBot.id}`);
 
                 return res.status(200).json({ success: true, message: "Bot successfully Updated", bot: {
                     id: newBot.id,
