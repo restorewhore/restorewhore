@@ -1,9 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { createRedisInstance } from "../../src/Redis";
 import dotenv from "dotenv";
 dotenv.config({ path: "../../" });
-
-const redis = createRedisInstance();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) { 
     if (req.method !== "POST") return res.status(405).json({ message: "Method not allowed" });
@@ -31,8 +28,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 if (!res.success) { console.log(res); throw new Error("Invalid captcha"); }
             });
 
-        // add member to captcha db so he can verify without captcha for the next 3 days
-        await redis.set(`captcha:${data.id}`, "true", "EX", 60 * 60 * 24 * 3);
 
         return res.status(200).json({ 
             code: 200,
