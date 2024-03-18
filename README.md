@@ -13,7 +13,9 @@ Lake Ozark, MO 65049
 ## Unlike RestoreCord, we won't completely mask how this works, so here's a small tutorial :)
 > [!WARNING]
 > [VaultCord](https://vaultcord.com) is still a way better solution than this, this is really meant for tinkerers like us. And of course, many thanks to mak for helping out :) Make sure to check out VaultCord, it's miles better than this heap of trash
+> 
 > As this is a direct clone of RestoreCord (but with fixes to make it operational), there are inherit vulnerabilities within the software. Blame xenos.
+> 
 > Therefore, you shouldn't use this in a production env. Just use VaultCord. Again, it's way better and more secure (like seriously, why is not hashing IPs industry standard! VaultCord hashes their IPs, so good luck ever breaking it)
 
 ## Instructions
