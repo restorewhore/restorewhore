@@ -21,28 +21,35 @@ Lake Ozark, MO 65049
 
 ## Instructions
 
-Rent a cheap server from [OVH Cloud](https://ovhcloud.com), [HiVelocity](https://hivelocity.net), or [PfCloud](https://pfcloud.io/) and use Ubuntu, as it's a decent Linux distro and you can find many resources/examples that use Ubuntu online
+Rent a cheap server from [OVH Cloud](https://ovhcloud.com), [HiVelocity](https://hivelocity.net), or [PfCloud](https://pfcloud.io/). Make sure to use Ubuntu, as it's a decent Linux distro and you can find many resources/examples that use Ubuntu online
+
+[Install Node.js on your server](https://nodejs.org/en/download/package-manager)
+
+Install MySQL on your server. [Here's an example using Ubuntu.](https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04)
+
+
+Connect to MySQL using `mysql -u root` and create the database using `CREATE DATABASE restore;`, then run the `quit` command.
 <br>
-Install Nodejs on your server https://nodejs.org/en/download/package-manager
+
+
+Download & clone the source code using `git clone https://github.com/restorewhore/restorewhore.git`
 <br>
-Install MySQL on server https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04
-<br><br>
-Connect to MySQL `mysql -u root` and create the database `CREATE DATABASE restore;` then `quit` command.
-<br>
-Now download source code `git clone https://github.com/rc-mill/restorewhore.git`
-<br>
-Navigate to source folder `cd restorewhore`
-<br><br>
-Install libraries `npm install`
-<br>
-Initialize the database tables `npx prisma migrate dev --name init`
-<br>
-Build the source code `npm run build` (you must do this EVERY time you change code)
-<br>
+
+Navigate to the folder Git created for you (`cd restorewhore`)
+
+Install all the required dependencies using `npm install`
+
+Initialize the database tables with `npx prisma migrate dev --name init`
+
+Build the source code with `npm run build` 
+> [!IMPORTANT]
+> You must rebuild the source code with `npm run build` EVERY time you change code!
+> 
 Turn the site online `npm install -g pm2` and then `pm2 start npm --name "restorewhore" -- start` and `pm2 save`
-<br><br>
-*Note: If pm2 doesn't work for you, you can use `npm start` instead. BUT this will only work while terminal is open, so you need something like PM2 for live production sites.*
-<br><br>
+
+> [!NOTE]
+> If pm2 doesn't work for you, you can use `npm start` instead. However, this will only work while terminal is open, so you need something like PM2 for live production sites.
+> 
 Profit!
 
 ## Extra notes
