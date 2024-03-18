@@ -1,6 +1,6 @@
 👋
 # RestoreWhore - a RestoreCord clone
-#### Copyright has been relinquished, please read the license for information on what you can do.
+#### There is no copyright, please read the license for more information.
 #### NOTE: Send all copyright notices by *MAIL* in the following format;
 ```
 Ron Trimmer
@@ -9,10 +9,11 @@ Nemo Media, LLC
 23 Grandview Dr
 Lake Ozark, MO 65049
 ```
+#### Any other forms of notice (e.g email, phone) will not be accepted due to technical issues.
 
 ## Unlike RestoreCord, we won't completely mask how this works, so here's a small tutorial :)
 > [!WARNING]
-> [VaultCord](https://vaultcord.com) is still a way better solution than this, this is really meant for tinkerers like us. And of course, many thanks to mak for helping out :) Make sure to check out VaultCord, it's miles better than this heap of trash
+> [VaultCord](https://vaultcord.com) is still a way better solution than this, this is really meant for tinkerers like us. And of course, many thanks to mak for helping out :) Make sure to check out VaultCord, it's miles better than this heap of trash.
 > 
 > As this is a direct clone of RestoreCord (but with fixes to make it operational), there are inherit vulnerabilities within the software. Blame xenos.
 > 
@@ -20,7 +21,7 @@ Lake Ozark, MO 65049
 
 ## Instructions
 
-Rent a cheap server from https://ovhcloud.com or https://pfcloud.io/ Ubuntu is a good operating service because you can find many resources using Ubuntu online
+Rent a cheap server from [OVH Cloud](https://ovhcloud.com), [HiVelocity](https://hivelocity.net), or [PfCloud](https://pfcloud.io/) and use Ubuntu, as it's a decent Linux distro and you can find many resources/examples that use Ubuntu online
 <br>
 Install Nodejs on your server https://nodejs.org/en/download/package-manager
 <br>
