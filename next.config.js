@@ -9,7 +9,6 @@ module.exports = {
             "cdn.discord.com",
             "i.imgur.com",
             "docs.restorecord.com",
-            "cdn.trustpilot.net",
         ],
     },
     staticPageGenerationTimeout: 300,
