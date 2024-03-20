@@ -1,21 +1,10 @@
 👋
-# RestoreWhore - a RestoreCord clone
-#### There is no copyright, please read the license for more information.
-#### NOTE: Send all copyright notices by *MAIL* in the following format;
-```
-Ron Trimmer
-Copyright Agent
-Nemo Media, LLC
-23 Grandview Dr
-Lake Ozark, MO 65049
-```
-#### Any other forms of notice (e.g email, phone) will not be accepted due to technical issues.
+# RestoreWhore
 
-## Unlike RestoreCord, we won't completely mask how this works, so here's a small tutorial :)
 > [!WARNING]
 > [VaultCord](https://vaultcord.com) is still a way better solution than this, this is really meant for tinkerers like us. And of course, many thanks to mak for helping out :) Make sure to check out VaultCord, it's miles better than this heap of trash.
 > 
-> As this is a direct clone of RestoreCord (but with fixes to make it operational), there are inherit vulnerabilities within the software. Blame xenos.
+> As this is a open-sourced project (but with fixes to make it operational), there are inherit vulnerabilities within the software. Blame xenos.
 > 
 > Therefore, you shouldn't use this in a production env. Just use VaultCord. Again, it's way better and more secure (like seriously, why is not hashing IPs industry standard! VaultCord hashes their IPs, so good luck ever breaking it)
 
