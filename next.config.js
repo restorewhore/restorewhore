@@ -8,7 +8,7 @@ module.exports = {
             "cdn.discordapp.com",
             "cdn.discord.com",
             "i.imgur.com",
-            "docs.restorecord.com",
+            "docs.restorewhore.com",
         ],
     },
     staticPageGenerationTimeout: 300,
